@@ -13,7 +13,7 @@ class UserCreateRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return \Gate::allows('edit', 'users');
     }
 
     /**

@@ -22,7 +22,6 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontFlash = [
-        'current_password',
         'password',
         'password_confirmation',
     ];
@@ -37,5 +36,41 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    /**
+     * Report or log an exception.
+     *
+     * @param \Throwable $exception
+     *
+     * @return void
+     *
+     * @throws \Exception
+     */
+    public function report(Throwable $exception)
+    {
+        parent::report($exception);
+    }
+
+    /**
+     * Render an exception into an HTTP response.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \Throwable $exception
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @throws \Throwable
+     */
+    public function render($request, Throwable $exception)
+    {
+        return response([
+            'error' => $exception->getMessage(),
+        ], $exception->getCode() ? $exception->getCode() : 400);
+    }
+
+    public function unauthenticated($request, $exception)
+    {
+        return response(['error' => 'unauthenticated'], 401);
     }
 }
